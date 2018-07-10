@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
-import { SharedModule } from '../_shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
-
-import { ContactFormComponent } from './contact-form/contact-form.component';
+import { SharedModule } from '../_shared/shared.module';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
+import { ContactFormComponent } from './contact-form/contact-form.component';
+import { ContentModule } from '../content/content.module';
 
 @NgModule({
   imports: [
     SharedModule,
     ReactiveFormsModule,
+    ContentModule,
   ],
   declarations: [
     ContactFormComponent,

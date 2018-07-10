@@ -1,5 +1,5 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 import { Observable, of, Subscription } from 'rxjs';
@@ -97,9 +97,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
       this.pagesResponse = newArray;
       this.initFlag = false;
 
+      this.changeDetectorRef.detectChanges();
       // On server errors
     }, () => {
       this.progressSpinner = false;
+      this.changeDetectorRef.detectChanges();
     } // Avoid loop
     );
   }
@@ -199,7 +201,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const data: DialogContent = {
       dialogData: {
         title: 'Confirm',
-        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.title}?
+        body: `Do you really want to <b>delete</b> ${this.contentForm[i].value.page}?
                 <br><br>
                Submit your changes first, this will delete unsaved changes`,
         button: 'Confirm',
@@ -330,10 +332,10 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
   public listRemoveItem(i: number, j: number, m: number) {
 
     if (this.pagesResponse[i].lists[j].list.length === 1) {
-      this.setValueListItemField(i, j, ['']);
+      this.setValueListItemField(i, j, m, ['']);
       this.pagesResponse[i].lists[j].list[0] = [''];
     } else {
-      this.removeListItemField(i, j);
+      this.removeListItemField(i, j, m);
       this.pagesResponse[i].lists[j].list.splice(m, 1);
     }
   }
@@ -588,11 +590,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const control = <FormArray>this.contentForm[i].controls['lists'];
     control.removeAt(j);
   }
-  private removeListItemField(i: number, j: number) {
+  private removeListItemField(i: number, j: number, m: number) {
     const controlLists = <FormArray>this.contentForm[i].get('lists');
     const controlListsItems = <FormGroup>controlLists.get([j]);
     const itemsArray = <FormArray>controlListsItems.get('list');
-    itemsArray.reset(['']);
+    itemsArray.removeAt(m);
   }
   private removeListExtraItemField(i: number, j: number, m: number, u: number) {
     const controlLists = <FormArray>this.contentForm[i].get('lists');
@@ -625,11 +627,11 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     const itemsArray = <FormArray>control.controls['list'];
     itemsArray.reset(value);
   }
-  private setValueListItemField(i: number, j: number, value: string[]) {
+  private setValueListItemField(i: number, j: number, m: number, value: string[]) {
     const controlLists = <FormArray>this.contentForm[i].controls['lists'];
     const controlListsItems = <FormGroup>controlLists.controls[j];
     const itemsArray = <FormArray>controlListsItems.controls['list'];
-    itemsArray.reset(value);
+    itemsArray.at(m).reset(value);
   }
 
   // Form context
@@ -708,6 +710,7 @@ export class ContentManagementComponent implements OnInit, OnDestroy {
     private snackbarComponent: SnackbarComponent,
     private userService: UserService,
     private sharedService: SharedService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.getForm();
   }

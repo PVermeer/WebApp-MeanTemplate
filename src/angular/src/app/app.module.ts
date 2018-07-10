@@ -18,6 +18,7 @@ import { ContentModule } from './_modules/content/content.module';
 import { UsersModule } from './_modules/users/users.module';
 import { SharedModule } from './_modules/_shared/shared.module';
 import { VisualModule } from './_modules/_visual/visual.module';
+import { FooterComponent } from './_modules/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { VisualModule } from './_modules/_visual/visual.module';
     ContactComponent,
     UserComponent,
     ErrorComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
