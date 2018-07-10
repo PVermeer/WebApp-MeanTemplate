@@ -105,7 +105,7 @@ export async function clearCacheDirs() {
 
         } catch {
 
-          if (counter < 10) {
+          if (counter < 5) {
             setTimeout(() => {
               counter++;
               clearDirs();
