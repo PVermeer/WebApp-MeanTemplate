@@ -1,19 +1,23 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatExpansionPanel, MatSidenav, MatSlideToggle } from '@angular/material';
-import { RouterOutlet } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { NavigationEnd, Router, RouterEvent, RouterOutlet } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { ContentPageDocumentLean } from '../../../../server/database/models/content/content.types';
+import { ContentService } from '../_modules/content/content.service';
 import { UserService } from '../_modules/users/user.service';
+import { fadeAnimation } from '../_modules/_shared/services/animations.service';
 import { SidenavService } from './sidenav.service';
 import { SidenavContent } from './sidenav.types';
-import { fadeAnimation } from '../_modules/_shared/services/animations.service';
-import { map } from 'rxjs/operators';
+import { SnackbarComponent } from '../_modules/_shared/components/snackbar/snackbar.component';
 
 @Component({
   selector: 'app-sidenav',
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.css'],
-  animations: [fadeAnimation()]
+  animations: [fadeAnimation()],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidenavComponent implements OnInit, OnDestroy {
 
@@ -25,7 +29,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   @ViewChildren('expRouteNav') private expRoutedNav: QueryList<MatExpansionPanel>;
 
   // Sidenav content
-  public title = 'app';
+  public appInfo: ContentPageDocumentLean;
   public pageNav: SidenavContent = [{
     title: 'Navigation',
     items: [
@@ -38,18 +42,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // Variables
   public sidenavContent: SidenavContent;
   public isLoggedIn = false;
-
-  public isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
-  public isMobile$: Observable<boolean> = this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.Tablet])
-    .pipe(map(result => result.matches));
+  public isHome = true;
+  public routerIsAnimating = true;
+  public isHandset: boolean;
 
   // Methods
   public onRouterActivate() {
     document.getElementById('sidenav-content').scrollTo({ top: 0, behavior: 'instant' });
   }
 
-  public scrollTo(element: string) { this.sidenavService.scrollIntoView(element); }
+  public scrollTo(element: string) {
+    if (this.isHandset) { this.drawer.close(); }
+    this.sidenavService.scrollIntoView(element);
+  }
 
   public toggleTheme(event: MatSlideToggle) { this.sidenavService.passThemeToggle(event.checked); }
 
@@ -58,6 +63,35 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public login() { this.userService.login(); }
 
   public logout() { this.userService.logout(); }
+
+  private checkIfHome() {
+    const routerEvents = this.router.events
+      .pipe(filter(x => x instanceof NavigationEnd))
+      .subscribe((event: RouterEvent) => {
+        if (event.url === '/' || event.url === '/home') {
+          this.isHome = true;
+        } else {
+          this.isHome = false;
+        }
+      });
+    this.subscriptions.add(routerEvents);
+  }
+
+  private getInfoPage() {
+    this.contentService.getContentPage('App info').subscribe(response => {
+      this.sidenavService.passInfoPage(response);
+      this.appInfo = response;
+    }, () => this.snackbarComponent.snackbarError('No app info page in DB')
+  );
+  }
+
+  private observeBreakpoints() {
+    const breakpointObserver = this.breakpointObserver.observe(Breakpoints.Handset)
+      .pipe(map(result => result.matches)).subscribe((matches) => {
+        this.isHandset = matches;
+      });
+    this.subscriptions.add(breakpointObserver);
+  }
 
   // Sidenav options
   private sideNavContentChange() {
@@ -70,35 +104,35 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private toggleSidenav() {
     const subscription = this.sidenavService.sidenavToggle$.subscribe(sidenavToggle => {
-      setTimeout(() => {
+
+      if (!this.isHandset) {
         switch (sidenavToggle) {
           case 'open': this.drawer.open(); break;
           case 'close': this.drawer.close(); break;
           case 'toggle': this.drawer.toggle(); break;
           default: this.drawer.open();
         }
-      });
+      } else { this.drawer.close(); }
     });
     this.subscriptions.add(subscription);
   }
 
   private toggleExpansions() {
     const subscription = this.sidenavService.expansionToggle$.subscribe(expansionToggle => {
-      setTimeout(() => {
-        if (expansionToggle === 'open') {
-          this.expRoutedNav.forEach((child) => { child.open(); return; });
-        }
-        if (expansionToggle === 'close') {
-          this.expRoutedNav.forEach((child) => { child.close(); return; });
-        }
-        if (expansionToggle === 'toggle') {
-          this.expRoutedNav.forEach((child) => { child.toggle(); return; });
-        }
-        if (expansionToggle === 'home') {
-          this.expPageNav.open();
-          return;
-        }
-      });
+
+      if (expansionToggle === 'open') {
+        this.expRoutedNav.forEach((child) => { child.open(); return; });
+      }
+      if (expansionToggle === 'close') {
+        this.expRoutedNav.forEach((child) => { child.close(); return; });
+      }
+      if (expansionToggle === 'toggle') {
+        this.expRoutedNav.forEach((child) => { child.toggle(); return; });
+      }
+      if (expansionToggle === 'home' || this.isHandset) {
+        this.expPageNav.open();
+      }
+      this.changeDetectorRef.detectChanges();
     });
     this.subscriptions.add(subscription);
   }
@@ -106,6 +140,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private toggleIsLoggedIn() {
     const subscription = this.userService.isLoggedIn$.subscribe(isLoggedIn => {
       this.isLoggedIn = isLoggedIn;
+      this.changeDetectorRef.detectChanges();
     });
     this.subscriptions.add(subscription);
   }
@@ -116,16 +151,20 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private breakpointObserver: BreakpointObserver,
     private sidenavService: SidenavService,
     private userService: UserService,
-  ) {
+    private contentService: ContentService,
+    private router: Router,
+    private snackbarComponent: SnackbarComponent,
+  ) { }
 
+  ngOnInit() {
+    this.userService.checkLogin();
+    this.checkIfHome();
+    this.getInfoPage();
+    this.observeBreakpoints();
     this.sideNavContentChange();
     this.toggleSidenav();
     this.toggleExpansions();
     this.toggleIsLoggedIn();
-  }
-
-  ngOnInit() {
-    this.userService.checkLogin();
   }
 
   ngOnDestroy() {

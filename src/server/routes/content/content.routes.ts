@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { dbConnectionError, upload } from '../../database/connection';
+import { dbConnectionError, dbReadOnlyError, upload } from '../../database/connection';
 import { userTypes } from '../../database/models/users/user.schema';
 import { cacheJson, clearCache } from '../../services/cache-control.service';
 import { requiresUserAuth } from '../users/users.authentication';
@@ -9,12 +9,13 @@ const router = Router();
 
 // Middleware
 router.use(dbConnectionError);
+router.use(dbReadOnlyError);
 
 // -----------Routes-------------------
 
 // No authentication
 router.get('/page', cacheJson, getPage);
-router.get('/image', getFile); // Separation for client cache support (images may be cached, files may not)
+router.get('/image', getFile);
 router.get('/file', getFile);
 
 // Admin authentication

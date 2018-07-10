@@ -16,8 +16,15 @@ import { PagePathHighlightDirective } from './directives/page-path-highlight.dir
 import { PreviewImageDirective } from './directives/preview-image.directive';
 import { ViewImageDirective } from './directives/view-image.directive';
 import { MaterialModule } from './modules/material.module';
+import { ConvertLinebreaksPipe } from './pipes/convert-linebreaks.pipe';
 import { MaxLengthPipe } from './pipes/max-length.pipe';
 import { MailService } from './services/mail.service';
+import { OverflowHideDirective } from './directives/overflow-hide.directive';
+import { SpaceToArrayPipe } from './pipes/space-to-array.pipe';
+import { CommaToArrayPipe } from './pipes/comma-to-array.pipe';
+import { FaIconComponent } from './fa-icon/fa-icon.component';
+import { RemoveSpacesPipe } from './pipes/remove-spaces.pipe';
+import { FilterArrayPipe } from './pipes/filter-array.pipe';
 
 const sharedModules = [
   CommonModule,
@@ -40,7 +47,14 @@ const sharedModules = [
     PagePathHighlightDirective,
     DialogSpinnerComponent,
     DialogSpinnerDialogComponent,
-    MaxLengthPipe
+    MaxLengthPipe,
+    ConvertLinebreaksPipe,
+    OverflowHideDirective,
+    SpaceToArrayPipe,
+    CommaToArrayPipe,
+    FaIconComponent,
+    RemoveSpacesPipe,
+    FilterArrayPipe,
   ],
   exports: [
     sharedModules,
@@ -49,7 +63,14 @@ const sharedModules = [
     ViewImageDirective,
     PagePathHighlightDirective,
     DialogSpinnerComponent,
-    MaxLengthPipe
+    MaxLengthPipe,
+    ConvertLinebreaksPipe,
+    OverflowHideDirective,
+    SpaceToArrayPipe,
+    CommaToArrayPipe,
+    FaIconComponent,
+    RemoveSpacesPipe,
+    FilterArrayPipe
   ],
   providers: [
     SnackbarComponent, MailService

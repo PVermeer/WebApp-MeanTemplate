@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   public page: ContentPageDocumentLean;
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'open';
+  private sidenavToggle: MatToggle = 'close';
   private expansionToggle: MatToggleExp = 'open';
 
   // Sidenav content
