@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { UserService } from '../.././user.service';
+import { UserService } from '../../user.service';
 import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
 import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { ErrorMessage } from '../../../../../../../server/types/types';

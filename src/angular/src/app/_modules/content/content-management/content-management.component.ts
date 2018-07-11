@@ -10,7 +10,7 @@ import { DialogComponent, DialogContent } from '../../_shared/components/dialog/
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
 import { SharedService } from '../../_shared/services/shared.service';
 import { ContentService } from '../content.service';
-import { ContentPageDocumentExt, ContentPageLeanSubmit } from './content-management.types.d';
+import { ContentPageDocumentExt, ContentPageLeanSubmit } from './content-management.types';
 import { NewPageComponent } from './new-page/new-page.component';
 
 @Component({

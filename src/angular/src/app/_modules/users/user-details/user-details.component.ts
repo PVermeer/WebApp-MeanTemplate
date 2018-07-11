@@ -5,7 +5,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { UserModel } from '../../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../_shared/components/snackbar/snackbar.component';
-import { UserService } from '.././user.service';
+import { UserService } from '../user.service';
 import { AppValidators } from '../custom.validators';
 import { CurrentUser } from '../jwt.interceptor';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';

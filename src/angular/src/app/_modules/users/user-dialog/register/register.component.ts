@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { UserRegister } from '../../../../../../../server/database/models/users/user.types';
 import { DialogComponent } from '../../../_shared/components/dialog/dialog.component';
-import { UserService } from '../.././user.service';
+import { UserService } from '../../user.service';
 import { AppValidators } from '../../custom.validators';
 import { UserDialogComponent } from '../user-dialog.component';
 

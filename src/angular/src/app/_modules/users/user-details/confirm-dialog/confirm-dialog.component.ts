@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material';
 import { UserRegister } from '../../../../../../../server/database/models/users/user.types';
 import { DialogComponent, DialogContent } from '../../../_shared/components/dialog/dialog.component';
 import { SnackbarComponent } from '../../../_shared/components/snackbar/snackbar.component';
-import { UserService } from '../.././user.service';
+import { UserService } from '../../user.service';
 
 
 @Component({
