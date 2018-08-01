@@ -17,6 +17,7 @@ export class AboutComponent implements OnInit, AfterViewInit {
   // Sidenav content
   private sidenavContent: SidenavContent = [{
     title: 'About',
+    type: 'hashScroll',
     items: [
       { label: 'Welcome', path: 'welcome' },
     ],

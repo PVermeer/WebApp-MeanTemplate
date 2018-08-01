@@ -32,6 +32,7 @@ export class ContactComponent implements OnInit, OnDestroy {
 
       this.sidenavContent = [{
         title: this.page.info.title,
+        type: 'hashScroll',
         items: this.page.texts.map(x => ({ label: x.header, path: x.header })),
       }];
 

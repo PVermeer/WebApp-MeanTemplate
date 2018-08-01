@@ -32,6 +32,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   public appInfo: ContentPageDocumentLean;
   public pageNav: SidenavContent = [{
     title: 'Navigation',
+    type: 'routerLink',
     items: [
       { label: 'Home', path: 'home' },
       { label: 'About', path: 'about' },

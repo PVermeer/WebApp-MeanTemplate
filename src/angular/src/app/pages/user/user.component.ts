@@ -25,6 +25,7 @@ export class UserComponent implements OnInit, AfterViewInit, OnDestroy {
   // Sidenav content
   private sidenavContent: SidenavContent = [{
     title: 'User page',
+    type: 'hashScroll',
     items: [
       { label: 'User details', path: 'user-card' },
     ],

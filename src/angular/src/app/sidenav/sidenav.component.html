@@ -54,10 +54,21 @@
                 {{content.title | maxLength:14}}
               </mat-panel-title>
             </mat-expansion-panel-header>
+
             <mat-nav-list role="list">
-              <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path">
-                {{item.label | maxLength:14}}
-              </a>
+
+              <div *ngIf="content.type === 'hashScroll'; else useRouterLink">
+                <a *ngFor="let item of content.items"  mat-list-item role="listitem" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path">
+                  {{item.label | maxLength:14}}
+                </a>
+              </div>
+
+              <ng-template #useRouterLink>
+                <a mat-list-item role="listitem" *ngFor="let item of content.items" role="listitem" [routerLink]="item.path" routerLinkActive="active-link">
+                  {{item.label | maxLength:14}}
+                </a>
+              </ng-template>
+
             </mat-nav-list>
           </mat-expansion-panel>
 

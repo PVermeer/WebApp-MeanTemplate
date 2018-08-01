@@ -1,5 +1,6 @@
 interface SidenavContentObject {
   title: string;
+  type: 'routerLink' | 'hashScroll';
   items: Array<{label: string; path: string}>;
 }
 export interface SidenavContent extends Array<SidenavContentObject> { }

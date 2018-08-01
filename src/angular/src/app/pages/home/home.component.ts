@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
   public page: ContentPageDocumentLean;
 
   // Sidenav config
-  private sidenavToggle: MatToggle = 'close';
+  private sidenavToggle: MatToggle = 'open';
   private expansionToggle: MatToggleExp = 'open';
 
   // Sidenav content
@@ -42,6 +42,7 @@ export class HomeComponent implements OnInit {
       // Sidenav config
       this.sidenavContent = [{
         title: this.title,
+        type: 'hashScroll',
         items: page.texts.map(x => ({ label: x.header, path: x.header })),
       }];
       this.sidenavService.passSidenavContent(this.sidenavContent);
