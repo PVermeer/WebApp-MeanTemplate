@@ -267,20 +267,15 @@ export async function registerUser(req: RequestId) {
 
   await userValidation(userForm);
 
-  // Convert to user model
   const user = userForm as UserModel;
   user.type = userTypes.tempUser;
 
-  // Save as temporary
   const savedTempUser = await saveTempUser(user);
 
-  // Convert to user lean model
   const tempUser: UserDocumentLean = savedTempUser.toObject();
 
-  // Send mail verification
   const verificationToken = createVerificationToken(tempUser);
   await userVerificationMail(tempUser, origin as string, verificationToken)
-    // Catch error to delete temp user on errors
     .catch(error => {
       deleteTempUser({ _id: savedTempUser._id });
       throw error;

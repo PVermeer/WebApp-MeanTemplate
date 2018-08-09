@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   <div class="flex-column-around-center">
     <br><br>
     <h1>Whoops something went wrong</h1>
-    <h2>Try refreshing your browser</h2>
+    <a #clickLink href="/"></a>
+    <button mat-raised-button color="accent" (click)="clickLink.click()" class="cursor-pointer"> Reset the app </button>
   </div>
   `,
   styles: []
