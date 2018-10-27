@@ -58,7 +58,7 @@
             <mat-nav-list role="list">
 
               <div *ngIf="content.type === 'hashScroll'; else useRouterLink">
-                <a *ngFor="let item of content.items"  mat-list-item role="listitem" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path">
+                <a *ngFor="let item of content.items"  mat-list-item role="listitem" role="listitem" (click)="scrollTo(item.path)" [appPagePathHighlight]="item.path" className="active-link" >
                   {{item.label | maxLength:14}}
                 </a>
               </div>
